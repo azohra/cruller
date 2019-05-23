@@ -1,0 +1,11 @@
+language: node_js
+node_js: 
+  - "10"
+
+jobs: 
+  include :
+    - stage: test
+      script: PIPELINE=true npm test
+    - stage: publish
+      if: branch = master
+      script: npx semantic-release
