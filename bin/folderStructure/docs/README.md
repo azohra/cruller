@@ -40,17 +40,6 @@ Be sure to set up your custom environment variables.
 ### Env Exceptions
 A function that contains custom instructions for specific permutations of environment variables which do not occur normally.
 
-### Accessibility Configurations
-All ```axe``` configurations are supported and can be set for your crawls. Refer [Axe-Configurations](https://github.com/dequelabs/axe-core/blob/master/doc/API.md#api-name-axeconfigure) for possible options.
-
-### Accessibility Report Configurations
-This is to be used for setting ```axe report``` configurations for your crawls. By default, Cruller allows setting -
-* Report file type : Supported file types are ```tsv``` and ```csv```.
-* Report file name : Report will be generated with this file name.
-* createNewFile flag: Boolean flag to be set as ```true``` if new report file is required per page,  else should be set as ```false```. In later case, flag value should be explicitly sent as ```true``` in ```accessibilityCheck``` method when calling method for first time.
-
-```await [project name].accessibilityCheck([project name].page, true);```
-
 ## Usage
 
 ### Configuring Stamps
@@ -141,19 +130,3 @@ Methods are [stampit](https://stampit.js.org/api/methods) functions associated w
 
 * You can specify in the command line to run only certain permutations of your tests. The following command would run all tests using only the permutation of Google as your ```baseurl``` running at a tablet sized ```breakpoint```.  
 ```BASEURL="google" BREAKPOINT="tablet" npm test```
-
-### Commiting to This Repo
-
-* We use commitizen to format our commits. Run ```npm run commit``` after staging your changes to trigger the commitizen cli. Provide the type of change, component, a short description, and the ticket number. The other fields can be left blank.
-
-### Running Accessibility check
-
-* We use axe-puppeteer to test for accessibility and axe-reports to generate accessibility violation report at project root. Supported formats for report are ```tsv``` and ```csv```.
-
-* To run accessibility check, crawl to the desired page. After navigating to page, pass the page reference to ```accessibilityCheck``` method as following:
-
-    ```await [project name].accessibilityCheck([project name].page);```
-
-* ```accessibilityCheck``` method allows for two parameters, namely ```expected page``` and ```createNewFile``` flag. Flag value defaults to value set in ```config``` file, if none provided as argument.
-
-* Sample Jest matchers for accessibility validation can be refrenced at - ```__tests__/accessibility.test.js```

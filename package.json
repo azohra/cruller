@@ -1,6 +1,6 @@
 {
   "name": "cruller",
-  "version": "1.0.1",
+  "version": "1.1.3-beta.0",
   "description": "A web crawler capable of traversing any site with custom environmental variables.",
   "main": "index.js",
   "directories": {
@@ -15,12 +15,12 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run lint"
+      "pre-commit": "npm run lint && cd bin/folderStructure && npx makeDocs && git add docs"
     }
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/azohra/cruller.git"
+    "url": "https://gitlab.lblw.ca/ep/ep-web/cruller.git"
   },
   "author": "",
   "license": "ISC",
@@ -28,7 +28,7 @@
     "@stamp/it": "^1.1.0",
     "axe-puppeteer": "^1.0.0",
     "axe-reports": "^1.1.11",
-    "cosmiconfig": "^5.2.1",
+    "cosmiconfig": "^5.0.7",
     "fs-extra": "^7.0.1",
     "puppeteer": "^1.16.0"
   },
@@ -36,11 +36,13 @@
     "gen-fs": "bin/gen-fs.js"
   },
   "devDependencies": {
-    "commitizen": "^3.1.1",
+    "@semantic-release/gitlab": "^3.1.2",
+    "commitizen": "^3.0.7",
+    "cruller-docs": "0.0.8",
     "cz-conventional-changelog": "^2.1.0",
     "eslint": "^5.16.0",
     "husky": "^1.3.1",
-    "jest": "^24.8.0",
+    "jest": "^24.0.0",
     "semantic-release": "^15.13.14"
   },
   "config": {
