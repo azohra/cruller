@@ -7,6 +7,16 @@ const homeBase = stampit({
     },
 
     methods: {
+        /**
+         *  Home page functions.
+         *  @namespace Home
+         */
+
+        /**
+         * Sample method on the home page to display the breakpoint the test is being run on
+         * @memberof Home         
+         * @async
+         */
         async homeMethod() {
             console.log('desktop: ' + this.homeProp);
             return(this.homeProp);
@@ -16,7 +26,6 @@ const homeBase = stampit({
 
 const homeTablet = stampit({
     props: {
-        path: '/',
         homeProp: 'used for tablet'
     },
 
@@ -31,7 +40,6 @@ const homeTablet = stampit({
 
 const homeMobile = stampit({
     props: {
-        path: '/',
         homeProp: 'used for mobile'
     },
 
