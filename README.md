@@ -1,5 +1,7 @@
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 [![Build Status](https://travis-ci.com/azohra/cruller.svg?branch=master)](https://travis-ci.com/azohra/cruller)
+[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
+
 # Cruller
 
 A web crawler capable of traversing any site with custom environmental variables.
@@ -146,7 +148,7 @@ Methods are [stampit](https://stampit.js.org/api/methods) functions associated w
 
 ### Commiting to This Repo
 
-* We use commitizen to format our commits. Run ```npm run commit``` after staging your changes to trigger the commitizen cli. Provide the type of change, component, a short description, and the ticket number. The other fields can be left blank.
+* We use commitizen to format our commits. Run ```git commit``` after staging your changes to trigger the commitizen cli. Provide the type of change, component, a short description, and the ticket number. The other fields can be left blank.
 
 ### Running Accessibility check
 
