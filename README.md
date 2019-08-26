@@ -4,7 +4,16 @@
 
 # Cruller
 
-A web crawler capable of traversing any site with custom environmental variables.
+* Cruller is an open source page object framework for Google’s [Puppeteer](https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md) created by your pals in Engineering Productivity.
+* Cruller allows for easier creation and maintenance of page objects by leveraging [Stampit](https://stampit.js.org/).
+* Run in your pipelines using [Browserless](https://docs.browserless.io/).
+
+## Why Automate?
+
+* Catch bugs before your users do!
+* When integretaed with a pipeline, Cruller allows a full suite of tests to run on every push and merge request
+* Speed up your release cycle
+
 
 ## Installation
 Navigate to the repo where you would like to run Cruller. And run the following command to install Cruller into your project.
@@ -13,7 +22,8 @@ Navigate to the repo where you would like to run Cruller. And run the following 
 npm i cruller
 ```
 
-Ensure you have a testing suite installed if you would like to use one, as Cruller is agnostic to how it is used and will not provide one. Be sure to run ```npm init``` and ensure that the test command matches your test suite of choice. No other fields are required.  
+Be sure to run ```npm init``` and ensure that the test command matches your test suite of choice (though Cruller was made with [Jest](https://jestjs.io/
+) in mind). No other fields are required.  
 
 Run the following command to generate a template project structure, containing sample pages and tests in the root of where your automated test suite will be located.
 
@@ -25,126 +35,302 @@ npx gen-fs
 A file called cruller.config.js will have been created. Within this file many parameters are set.
 
 ### Environment Variables 
-Any number of environment variables can be set for your crawls. You are able to include as many instances of each variable as needed. By default Cruller will perform one crawl pass for each permutation if your environment variable combinations. By default Cruller includes two in every project:
+Any number of environment variables can be set for different permutations of your crawls. You are able to include as many instances of each variable as needed. By default Cruller will perform one crawl pass for each permutation if your environment variable combinations. Cruller includes two variables in every project. Both the default avlues as well as the variables can be changed or deletes if they are not necessary:
 
  * ```baseurl```: the origin landing page of your project.
- * ```breakpoints```: size breakpoint between devices.  
-
-### Stamp Directory {stampDirectory}
-Location of all page stamps. Using the gen-fs command will point this to the default directory. However, if you prefer you can keep your stamps elsewhere.
-
-### Browserless Url {browserlessUrl}
-Location of your browserless installation. Leave blank if none is being used.
+```javascript
+baseurl: {
+    google:'http://www.google.com/',
+    yahoo: 'https://www.yahoo.com/',
+    bing: 'https://www.bing.com/'
+}
+```    
+ * `breakpoints`: size breakpoint between devices.  
+```javascript
+breakpoint: {
+        mobile: {width: 650, height: 2000},
+        tablet: {width: 900, height: 2000},
+        desktop: {width: 1200, height: 2000}
+}
+```
 
 ### Setup Function
-Define any steps required to configure the startup state of your crawler.  
+Using any JS or Puppeteer methods, define any steps required to configure the startup state of your crawler, such as ensuring proper [authentication credentials](https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#pageauthenticatecredentials) 
+
+```javascript
+await page.authenticate({username: 'YOUR_USERNAME', password:'YOUR_PASSWORD'})
+```
+
+or [cookies](https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#pagesetcookiecookies) are set.
+
+```javascript
+await page.setCookie({ name: 'COOKIE_NAME', value: 'COOKIE_VALUE' });
+
+```
+
 By default the configuration of ```baseurl``` and ```breakpoints``` will be defined here.  
 Be sure to set up your custom environment variables.
 
 ### Env Exceptions
-A function that contains custom instructions for specific permutations of environment variables which do not occur normally.
+A function that contains custom instructions for specific permutations of environment variables which do not occur normally. The example below assumes environment variables are set for ```baseurl``` and ```breakpoint``` and that the permutation of ```tablet``` && ```bing``` should override the ```breakpoint``` to display as ```mobile``` and not ```tablet```.
+```javascript
+if (envMap.breakpoint == 'tablet' && envMap.baseurl == 'bing') envMap.breakpoint = 'mobile';
+return envMap;
+```
 
-### Accessibility Configurations
-All ```axe``` configurations are supported and can be set for your crawls. Refer [Axe-Configurations](https://github.com/dequelabs/axe-core/blob/master/doc/API.md#api-name-axeconfigure) for possible options.
+## Example Page Stamp & Crawl
 
-### Accessibility Report Configurations
-This is to be used for setting ```axe report``` configurations for your crawls. By default, Cruller allows setting -
-* Report file type : Supported file types are ```tsv``` and ```csv```.
-* Report file name : Report will be generated with this file name.
-* createNewFile flag: Boolean flag to be set as ```true``` if new report file is required per page,  else should be set as ```false```. In later case, flag value should be explicitly sent as ```true``` in ```accessibilityCheck``` method when calling method for first time.
+Before we dive into how to write stamps and tests let's take a look at an example of each. First, here's what a page stamp to execute a search on the home page of 3 popular search engines may look like.
 
-```await [project name].accessibilityCheck([project name].page, true);```
+```javascript
+const stampit = require('@stamp/it');
 
-## Usage
+// We are using Google as our base, this code will be run unless a later stamp overwrites it.
+const homeBase = stampit({
+    props: {
+        // Defining a prop to select the search bar on Google
+        searchBar: '[aria-label="Search"]'
+    },
 
-### Configuring Stamps
+    methods: {
+        // Use Puppeteer to fill in a search and execute the search
+        async search() {
+            await this.puppeteerPage.waitForSelector(this.searchBar, {visible: true});
+            await this.puppeteerPage.type(this.searchBar, 'cruller npm', {delay: 20});
+            await this.puppeteerPage.keyboard.press('Enter');
+        }
+    }
+});
+
+// This stamp will override props and methods with the same name in the base when Yahoo is set as the baseurl 
+const homeYahoo = stampit({
+    props: {
+        searchBar: '#uh-search-form'
+    }
+});
+
+// This stamp will override props and methods with the same name in the base when Bing is set as the baseurl
+const homeBing = stampit({
+    props: {
+        searchBar: '#sb_form_q'
+    }
+});
+
+module.exports = { homeBase, homeYahoo, homeBing };
+```
+
+Now let's see how we'd take these stamps and use them in a crawl. See `sample.test.js` to see the same crawl using Jest.
+
+```javascript
+const B = require('cruller'); // replace B with project-specific name
+const permutations = require('cruller').cartesian;
+
+        sample = new B;
+        // Establish which variables will be used for different permutations
+        await sample.startUp({baseurl: baseurl, breakpoint: breakpoint});
+        // Call the 'search' function from our home page stamp
+        await sample.homePage.search();
+        // Be sure to close your crawls when they are done!
+        await sample.browser.close();
+```
+
+## File Structure 
+
+### Pages Folder
+Each file in the ```pages``` directory contains all of the stamps used on that particular page. 
+
+* Any stamps created must be added to the ```index.js``` file of the ```pages``` directory
+
+### Sections Folder
+
+* Currently `WIP`!
+
+### Shared Folder
+Each file in the ```shared``` directory contains stamps that are used across several pages. Every stamp created in the ```shared``` directory is available to be used on any page, as long as it is not overwritten by an identically named ```prop``` or ```method```.
+
+* Any stamps created must be added to the ```index.js``` file of the ```shared``` directory
+
+### Tests Folder
+Each test crawl must be added to the ```tests``` folder with the syntax:  
+```testname.test.js```  
+
+## Puppeteer
+
+[Puppeteer](https://developers.google.com/web/tools/puppeteer/) is a Node library created by Google to control Chrome or Chromium over the DevTools protocol and is the backbone of Cruller.  
+
+Any action that can be taken using DevTools can be mimicked by Puppeteer. For testing purposes it works best to crawl through pages, by actions such as clicking buttons and filling in forms. The full list of available actions can be found [here](https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md).
+
+## Stamps
 
 ### What Are Stamps?
-[Stamps](https://stampit.js.org/) are how Cruller creates page objects and methods. Every page Cruller runs on will have stamps defining its props and methods.
+[Stamps](https://stampit.js.org/) are what Cruller uses to creates page objects and methods. Every page Cruller runs on will have stamps defining its props and methods.  
+
+Each page's Stamps are JS objects created using the ```stampit``` method with up to two properties, ```props``` and ```methods```.
 
 ### Creating Stamps
-* Every page must export at least a Base Page. For example, the Home page export would look like this: ```module.exports = { homeBase };``` 
+* All stamp names within a page must match value exported in ```index.js``` followed by either ```Base``` as the default stamp, or the name of one of your permutations if it requires custom actions.  
 
 * The base stamp is the collection of props and methods that will be used on the given page by default, across all permutations of your enviornment variables, unless overwritten for specific environment variables with a seperate stamp.
 
-* When naming Page Stamps, follow the naming convention for base stamps ```lowercase page name + Base```. For example, the Home Page base stamp would be named ```homeBase```. 
-
-* If stamps for specific environment variables are needed follow the following naming convention ```lowercase page name + [environment variable name]```. For example, the Home Page Mobile stamp would be named ```homeMobile```. 
-
-* Stamps for specific environment variables will overwrite any props or methods with the same name provided in the base stamp. This is especially useful if the same prop or method requires different inputs depending on the environment, as your crawl will pick the correct stamp depending on the permutation. 
-
-* When exporting more than one page stamp per page, append any additional pages to the export statement, as follows: ```module.exports = { homeBase, homeMobile };```
+* If stamps for specific environment variables are needed create (and be sure to export!) a new stamp containing *only* the values of the Base stamp which must be overwritten. Name the stamp with the page title followed by the specific environment variable that is being used. For example, the Home Page stamp that only runs on the Google ```baseurl```  would be named ```homeGoogle```. 
 
 * There is no need to include a separate Page Stamp for any environment variable that has the same properties and methods as your base stamp.
 
-* To see example stamps see ```stamps/pages/home.js``` and ```stamps/shared/shared.js```.
+* Stamps for specific environment variables will overwrite any props or methods with the same name provided in the base stamp.  
+This is especially useful if the same prop or method requires different inputs or selectors depending on the environment, as your crawl will pick the correct stamp depending on the permutation. 
 
-#### Pages Folder
-Contains page stamps for individual pages.
+* To see an example set of page stamps from your generated file structure see ```stamps/pages/home.js```.
 
-* Any stamps created must be included in the ```index.js``` file of that directory
+### Props
 
-#### Sections Folder
-```WIP```: Contains stamps usable across several pages on the site. 
+Props are how [stampit](https://stampit.js.org/api/properties) adds properties to your Page Object. Every prop on a page will be a key value pair in the ```props``` object of your stamp. 
 
-#### Shared Folder
-Contains stamps usable on every page on the site.
+* To increase the readability of your methods it is recommended every CSS selector used for your methods is given a descriptive prop. Be sure to indicate the type of selector being used with the proper notation (```#``` for an ID, ```.``` for a class, or ```[title/label/etc="value"]```).  
 
-### Page Objects
+* Props are also valuable for inputting data such as form data.
 
-#### Props
+### Methods
 
-Props are how [stampit](https://stampit.js.org/api/properties) adds properties to your Page Object. Every prop on a page will be a key value pair which can be used by the Page's methods. 
+The second half of a stamp are Methods. Methods are [stampit](https://stampit.js.org/api/methods) functions associated with your page object. Since this a web crawler, it is recommended that only asynchronous functions are used, with each step being preceded by an ```await``` to ensure your methods execute in the correct order. All [Puppeteer](https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md) functions are available. 
 
-* To increase the readability of your methods it is recommended every CSS selector used for your methods is given a descriptive prop. Be sure to indicate the type of selector being used with the proper notation (```#``` for an ID, and ```.``` for a class). A prop called ```link``` for the class ```link_to_homepage``` would be set using:
+Ensure that whenever Puppeteer functions are called that they reference the Page Object. 
 
-```link : '.link_to_homepage'```
+As an example, the proper syntax for a statement in which the ```link``` prop is clicked would be the following:
 
-#### Methods
+```javascript 
+await this.puppeteerPage.click(this.link);
+```
 
-Methods are [stampit](https://stampit.js.org/api/methods) functions associated with your page object. Since this a web crawler, it is recommended that only asynchronous functions are used, with each step being preceded by an ```await``` to ensure your methods execute in the correct order. All [Puppeteer](https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md) functions are available. 
+However, you are not limited to using Puppeteer functions to create your methods. All non-Puppeteer JS functions can be used as well. Just be sure to call them asynchronously if necessary using ```await```.
 
-* Ensure that Puppeteer functions, and any props they use reference the Page Object. Therefore the proper syntax for a statement in which the ```link``` prop is clicked would be the following:
+Cruller even includes 4 helper methods available within every stamp. In these methods the ```props``` are called by a string value of their key.  
 
-```await this.puppeteerPage.click(this.link);```
+1) ```waitClick(prop)```: waits for a prop and then clicks once the prop is visible.
 
-* However, you are able to create statements which use non-Puppeteer functions. Cruller includes 5 helper methods available within every stamp: 
-     1) ```visit()```: visits the page of the ```baseUrl``` and appends a string of the prop ```pageUrl``` (which you must define on each page) to the end of the url.
+```javascript
+await this.waitClick('loginButton');
+```
 
-     2) ```waitClick(prop)```: waits for prop and then clicks once the prop is visible.
+2) ```waitClickNavigate(prop)```: waits for a prop, clicks once the prop is visible, and waits for navigation on the page to complete.
 
-     3) ```waitClickNavigate(prop)```: waits for prop, clicks once the prop is visible, and waits for navigation on the page to complete.
-     
-     4) ```emptyField(prop)```: deletes all text content of specified prop.
+```javascript
+await this.waitClickNavigate('registerButton');
+```
 
-     5) ```clickByIndex(prop, index)```: clicks on particular instance or a given prop.
+3) ```emptyField(prop)```: deletes all text content of specified prop.
 
-* For these, and any other non-Puppeteer functions, a different syntax is used. The following would click the same ```link``` prop used in prior examples using the ```waitClick()``` function:
+```javascript
+await this.emptyField('selectQuantity');
 
-```await this.waitClick('link');```
+```
 
-### Creating Tests in Jest
-* Cruller can support any test suite, however it was created with running Jest in mind. Jest test files are required to have the structure ```testname.test.js```. Be sure to install Jest in your project if you decide to use it, as it is not included with Cruller.
+4) ```clickByIndex(prop, index)```: clicks on particular instance or a given prop using a zero based index of its incidence.
+
+```javascript
+await this.clickByIndex('productNameLink', '2');
+```
+
+## Creating Tests in Jest
+* Cruller can support any test suite, however it was created with running Jest in mind. Be sure to install Jest in your project if you decide to use it, as it is not included with Cruller.
 
 * Every test should contain a beforeAll that launches a new instance of the crawler using [Chromium](https://www.chromium.org/Home) and runs the startUp command, which takes two objects as parameters.  
     1) perms: Permutations needed for the test. Baseurl and breakpoint are the two included with Cruller. 
     * Be sure to include any additional environment variables. 
-    2) opts: [Puppeteer Connect Options](https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#puppeteerconnectoptions) are not required to be included on any given test. If none are provided, Puppeteer's default connection settings will be used.
+    2) opts: [Puppeteer Connect Options](https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#puppeteerconnectoptions) are not required to be included on any given test. If none are provided, Puppeteer's default connection settings will be used. 
+You can any other necessary set up steps to the function as well on a test-by-test basis. 
 
-* Every test should contain an afterAll that closes the browser.
+```javascript
+beforeAll(async () => {
+        sample = new B;
+        await sample.startUp({banner: banner, breakpoint: breakpoint});
+    }, 80000);
+```
+
+* Every test should contain an afterAll that closes the browser, as well as any teardown steps necessary on a test-by-test basis. 
+
+```javascript
+    afterAll(async () => {
+        await sample.browser.close();
+    });
+```
 
 * Each test will be a series of steps under the following format until the crawl has completed all steps.  
 ```await [project name].[page name]Page.[method];```
 
-* Any set of assertions can be implemented but are not necessary to run tests. Be sure to establish where assertions are kept in your ```package.json``` file.
+```javascript
+await sample.homePage.search();
+```
+
+* Any set of assertions can be implemented but are not necessary to run tests. Be sure to establish where assertions are kept in your ```package.json``` file. The following example shows both the snippet to declare the location of your custom assertions in ```package.json``` as well as an example to create an assertion to check if an element is visible on the given page.
+
+```json
+"jest": {
+    "setupFilesAfterEnv": [
+      "./assertions.js"
+    ]
+  },
+```
+
+```javascript
+expect.extend({
+    async toHaveElement(puppeteerPage, expectedElement) {
+        await puppeteerPage.waitForSelector(expectedElement, {visible: true}); 
+        const pass = await puppeteerPage.$(expectedElement) !== null;
+        if (pass) {
+            return {
+                message: () =>
+                    `expected ${puppeteerPage.url()} not to contain the element ${expectedElement}`,
+                pass: true,
+            }; 
+        } else {
+            return {
+                message: () =>
+                    `expected ${puppeteerPage.url()} to contain the element ${expectedElement}`,                    
+                pass: false,
+            };
+        }
+    }
+});
+```
 
 * A sample test is provided in ```tests/sample.test.js```.
 
-### Running Tests Locally
+## Running Tests Locally
 * Run ```npm test```  on the command line within the directory your tests are located in.
 
-* You can specify in the command line to run only certain permutations of your tests. The following command would run all tests using only the permutation of Google as your ```baseurl``` running at a tablet sized ```breakpoint```.  
-```BASEURL="google" BREAKPOINT="tablet" npm test```
+* You can specify in the command line to run only certain permutations of your tests. The following command would run all tests using only the permutations of Google and Yahoo as your ```baseurl``` running at a tablet sized ```breakpoint```.  
+```bash
+BASEURL="google,yahoo" BREAKPOINT="tablet" npm test
+```
+
+* You can also run a subset of tests by passing in a string after ```npm test``` in your command line. As an example, if you had a whole test suite, but just wanted to run tests that have the string ```smoke``` in the title, you would run the following command.
+```bash
+npm test smoke
+```
+
+## Running Tests in the Pipeline
+* The rules for which permutations and tests to run apply for the pipeline as well, as long as they are set up in your ```yaml``` or ```sh``` file.
+
+* Ensure when running in the pipeline that the ```PIPELINE``` environment variavle is set to true. This allows the test to run using [Browserless](https://docs.browserless.io/). Please note that you need to provide a Browserless Key in your ```cruller.config.js```. The prior example would be called the following way in the pipeline.  
+```bash
+PIPELINE=true BASEURL="google,yahoo" BREAKPOINT="tablet" npm test
+```
+
+* Add a stage to you ```.yml``` file for your automated tests. An example based on a ```gitlab-ci.yml``` follows:
+```yml
+run_e2e_tests:
+  image: mhart/alpine-node
+  stage: e2e_test
+  when: manual
+  before_script:
+   - cd test-automation
+   - npm install
+  script:
+   - PIPELINE=true BASEURL="google,yahoo" BREAKPOINT="tablet" npm test
+  only:
+   - master
+   - tags
+```
 
 ### Commiting to This Repo
 

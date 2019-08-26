@@ -5,7 +5,7 @@ node_js:
 jobs: 
   include :
     - stage: test
-      script: PIPELINE=true npm test
+      script: PIPELINE=true npm test _tests_
     - stage: publish
       if: branch = master
       script: npx semantic-release

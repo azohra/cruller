@@ -6,16 +6,6 @@ const sharedBase = stampit({
     },
     
     methods: {
-        /**
-         *  Shared page functions.
-         *  @namespace Shared
-         */
-    
-        /**
-         * Sample method on the Shared page to show how methods run differently depending on the parameters given.
-         * @memberof Shared         
-         * @async
-         */
         async sharedAction() {
             console.log('this action is accessible from any page');                               
         }

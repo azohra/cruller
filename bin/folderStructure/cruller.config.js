@@ -2,8 +2,8 @@ module.exports = {
     variables: {
         baseurl: {
             google  : 'https://www.google.com/',
-            // yahoo   : 'https://www.yahoo.com/',
-            // bing    : 'https://www.bing.com/'
+            yahoo   : 'https://www.yahoo.com/',
+            bing    : 'https://www.bing.com/'
         },
 
         breakpoint: {
