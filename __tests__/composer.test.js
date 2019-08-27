@@ -2,7 +2,7 @@ const Cruller = require('../lib/crawler');
     
 describe('Composition', () => {
     let crawler;
-    
+
     test('Mobile stamp uses mobile function', async () => {
         crawler = new Cruller;
         await crawler.startUp({breakpoint: 'mobile', banner: 'crullerWiki'}, {});
