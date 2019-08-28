@@ -13,7 +13,7 @@ describe.each(permutations)('Sample %s %s', (banner, breakpoint) => {
         await sample.browser.close();
     });
     
-    test('Login', async () => {
-        await sample.homePage.homeMethod();
+    test('Search Test', async () => {
+        await sample.homePage.search();
     }, 80000);
 });

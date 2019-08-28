@@ -1,6 +1,8 @@
 const Cruller = require('../lib/crawler');
     
 describe('Set correct permutation', () => {
+    jest.retryTimes(3);
+
     let crawler;
     
     test('Mobile permutation is set', async () => {

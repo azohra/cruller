@@ -3,24 +3,33 @@ const stampit = require('@stamp/it');
 const homeBase = stampit({
     props: {
         path: '/',
-        homeProp: 'used for desktop'
+        homeProp: 'used for desktop',
+        searchBar: '[aria-label="Search"]'
     },
 
     methods: {
-        /**
-         *  Home page functions.
-         *  @namespace Home
-         */
+        async search() {
+            await this.puppeteerPage.waitForSelector(this.searchBar, {visible: true});
+            await this.puppeteerPage.type(this.searchBar, 'cruller npm', {delay: 20});
+            await this.puppeteerPage.keyboard.press('Enter');
+        },
 
-        /**
-         * Sample method on the home page to display the breakpoint the test is being run on
-         * @memberof Home         
-         * @async
-         */
         async homeMethod() {
             console.log('desktop: ' + this.homeProp);
             return(this.homeProp);
         }
+    }
+});
+
+const homeYahoo = stampit({
+    props: {
+        searchBar: '#uh-search-form'
+    }
+});
+
+const homeBing = stampit({
+    props: {
+        searchBar: '#sb_form_q'
     }
 });
 
@@ -52,4 +61,4 @@ const homeMobile = stampit({
     }
 });
 
-module.exports = { homeBase, homeTablet, homeMobile };
+module.exports = { homeBase, homeYahoo, homeBing, homeTablet, homeMobile };
