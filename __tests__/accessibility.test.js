@@ -2,12 +2,12 @@ const Cruller = require('../lib/crawler');
     
 describe('Run accessibility validation', () => {
     jest.retryTimes(3);
+    jest.setTimeout(20000);
 
     let crawler;
     let results;
 
     beforeAll(async () => {
-        jest.setTimeout(20000);
         crawler = new Cruller;
         await crawler.startUp({breakpoint: 'desktop', banner: 'crullerWiki'}, {});
         results = await crawler.accessibilityCheck(crawler.page, true);
