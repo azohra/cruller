@@ -1,6 +1,8 @@
 const Cruller = require('../lib/crawler');
     
 describe('Run accessibility validation', () => {
+    jest.retryTimes(3);
+
     let crawler;
     let results;
 
