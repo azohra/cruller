@@ -8,7 +8,7 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "jest",
+    "test": "jest _tests_",
     "cm": "git-cz",
     "lint": "npx eslint \"**/*.js\"",
     "lint:fix": "npx eslint \"**/*.js\" --fix"
@@ -18,6 +18,9 @@
       "prepare-commit-msg": "exec < /dev/tty && git cz --hook",
       "pre-commit": "npm run lint && cd bin/folderStructure && npx makeDocs && git add docs"
     }
+  },
+  "jest": {
+    "testRunner": "jest-circus/runner"
   },
   "repository": {
     "type": "git",
@@ -37,13 +40,14 @@
     "gen-fs": "bin/gen-fs.js"
   },
   "devDependencies": {
-    "commitizen": "^3.1.1",
+    "commitizen": "^4.0.3",
     "cruller-docs": "0.0.8",
     "cz-conventional-changelog": "^2.1.0",
     "eslint": "^5.16.0",
     "husky": "^1.3.1",
     "jest": "^24.8.0",
-    "semantic-release": "^15.13.16"
+    "jest-circus": "^24.9.0",
+    "semantic-release": "^15.13.24"
   },
   "config": {
     "commitizen": {

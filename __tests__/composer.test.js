@@ -1,6 +1,8 @@
 const Cruller = require('../lib/crawler');
     
 describe('Composition', () => {
+    jest.retryTimes(3);
+
     let crawler;
     
     test('Mobile stamp uses mobile function', async () => {
