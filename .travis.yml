@@ -6,6 +6,7 @@ jobs:
   include :
     - stage: test
       script: PIPELINE=true npm test _tests_
+      after_script: allure generate
     - stage: publish
       if: branch = master
       script: npx semantic-release
