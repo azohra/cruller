@@ -12,7 +12,7 @@ jobs:
       script: PIPELINE=true npm test _tests_
       after_script: 
         - docker run --rm -it -v ${PWD}/allure-results:/allure-results -v ${PWD}/allure-report:/allure-report jackwilde/allure ./allure generate /allure-results -o /allure-report --clean
-        - netlify deploy -s $NETLIFY_API -d /allure-report
+        - netlify deploy -s $NETLIFY_API -d allure-report
     - stage: publish
       if: branch = master
       script: npx semantic-release
