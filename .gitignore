@@ -3,3 +3,6 @@ node_modules
 *.csv
 allure-results
 allure-report
+
+# Local Netlify folder
+.netlify
