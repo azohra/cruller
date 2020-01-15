@@ -1,3 +1,5 @@
 node_modules
 *.tsv
 *.csv
+**/reports/*
+!**/reports/.gitkeep

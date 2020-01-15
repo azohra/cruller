@@ -32,12 +32,20 @@
     "@stamp/it": "^1.1.0",
     "axe-puppeteer": "^1.0.0",
     "axe-reports": "^1.1.11",
+    "chai": "^4.2.0",
     "cosmiconfig": "^5.2.1",
+    "cucumber": "^6.0.5",
+    "cucumber-html-reporter": "^5.1.0",
     "fs-extra": "^7.0.1",
-    "puppeteer": "^1.16.0"
+    "glob": "^7.1.6",
+    "lodash.get": "^4.4.2",
+    "lodash.merge": "^4.6.2",
+    "puppeteer": "^1.16.0",
+    "yargs": "^15.1.0"
   },
   "bin": {
-    "gen-fs": "bin/gen-fs.js"
+    "gen-fs": "bin/gen-fs.js",
+    "cruller-bdd": "bin/cruller-bdd.js"
   },
   "devDependencies": {
     "commitizen": "^4.0.3",
@@ -53,5 +61,12 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "cruller": {
+    "rootPath": "./bin/folderStructureBdd",
+    "reportsPath": "./bin/folderStructureBdd/reports",
+    "selectorFiles": [
+      "./bin/folderStructureBdd/support/selectors/**/*.js"
+    ]
   }
 }
