@@ -12,12 +12,13 @@
     "cm": "git-cz",
     "lint": "npx eslint \"**/*.js\"",
     "lint:fix": "npx eslint \"**/*.js\" --fix",
-    "definitions": "tsc -p ./lib/bdd"
+    "definitions": "tsc -p ./lib/bdd",
+    "prepublish": "npm run definitions"
   },
   "husky": {
     "hooks": {
       "prepare-commit-msg": "exec < /dev/tty && git cz --hook",
-      "pre-commit": "npm run definitions && npm run lint && cd bin/folderStructure && npx makeDocs && git add docs"
+      "pre-commit": "npm run npm run definitions && npm run lint && git add lib/bdd/typings && cd bin/folderStructure && npx makeDocs && git add docs"
     }
   },
   "jest": {
