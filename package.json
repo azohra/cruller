@@ -18,7 +18,7 @@
   "husky": {
     "hooks": {
       "prepare-commit-msg": "exec < /dev/tty && git cz --hook",
-      "pre-commit": "npm run npm run definitions && npm run lint && git add lib/bdd/typings && cd bin/folderStructure && npx makeDocs && git add docs"
+      "pre-commit": "npm run definitions && npm run lint && git add lib/bdd/typings && cd bin/folderStructure && npx makeDocs && git add docs"
     }
   },
   "jest": {
