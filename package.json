@@ -11,12 +11,13 @@
     "test": "jest _tests_",
     "cm": "git-cz",
     "lint": "npx eslint \"**/*.js\"",
-    "lint:fix": "npx eslint \"**/*.js\" --fix"
+    "lint:fix": "npx eslint \"**/*.js\" --fix",
+    "definitions": "tsc -p ./lib/bdd"
   },
   "husky": {
     "hooks": {
       "prepare-commit-msg": "exec < /dev/tty && git cz --hook",
-      "pre-commit": "npm run lint && cd bin/folderStructure && npx makeDocs && git add docs"
+      "pre-commit": "npm run definitions && npm run lint && cd bin/folderStructure && npx makeDocs && git add docs"
     }
   },
   "jest": {
@@ -55,7 +56,8 @@
     "husky": "^1.3.1",
     "jest": "^24.8.0",
     "jest-circus": "^24.9.0",
-    "semantic-release": "^15.13.24"
+    "semantic-release": "^15.13.24",
+    "typescript": "^3.7.5"
   },
   "config": {
     "commitizen": {
