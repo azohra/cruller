@@ -1,6 +1,6 @@
 const { After } = require('cucumber');
-require('../../../lib/bdd').hooks;
-const { browser } = require('../../../lib/bdd').actions;
+require('../../../lib/bdd/core/hooks');
+const { browser } = require('../../../lib/bdd/core/actions');
 
 // Custom hooks for tag @example
 After({ tags: '@example' }, () => {
