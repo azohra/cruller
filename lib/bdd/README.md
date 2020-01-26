@@ -219,4 +219,4 @@ The following example shows how to write e2e tests using the cruller bdd framewo
     npm run cruller:report -- -name MyTest
     ```
 
-For more examples on features files and the corresponding step definitions checkout [examples](bin/folderStructureBdd), [step_definitions](lib/bdd/core/steps) and  [actions](lib/bdd/core/actions) folders.
+For more examples on features files and the corresponding step definitions checkout [examples](../../bin/folderStructureBdd), [step_definitions](core/steps) and  [actions](core/actions) folders.
