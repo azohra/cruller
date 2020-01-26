@@ -128,11 +128,11 @@ This would open up the chrome and run the tests outlined in the example feature 
 ### Specifying Report Name
 In order to create reports with a custom name run
 ```bash
-npm run cruller:run -- --name <reportName>
+npm run cruller:run -- -name <reportName>
 ```
 e.g.
 ```bash
-npm run cruller:run -- --name Login
+npm run cruller:run -- -name Login
 ```
 
 ### Specifying Tags
@@ -168,11 +168,11 @@ yarn cruller:report
 ### Specifying Report Name
 In order to create readable reports based on a test name previously run, use the following command.
 ```bash
-npm run cruller:report -- --name <reportName>
+npm run cruller:report -- -name <reportName>
 ```
 e.g.
 ```bash
-npm run cruller:report -- --name Login
+npm run cruller:report -- -name Login
 ```
 
 ## Writing Your First Test
@@ -183,7 +183,7 @@ The following example shows how to write e2e tests using the cruller bdd framewo
     @my-test
     Feature: My first e2e feature using cruller-bdd
 
-        This is just go to google.com and search for cucumber-js
+        This goes to google.com and searches for cucumber-js
 
         Scenario: Search for cucumber-js on google
             Given I go to url "Google Website"
@@ -212,5 +212,11 @@ The following example shows how to write e2e tests using the cruller bdd framewo
     ```
 7. Finally run the test feature using the following command
     ```bash
-    npm run cruller:run -- --tags @my-test
+    npm run cruller:run -- -name MyTest --tags @my-test
     ```
+    Creating a readable report 
+    ```bash
+    npm run cruller:report -- -name MyTest
+    ```
+
+For more examples on features files and the corresponding step definitions checkout [examples](bin/folderStructureBdd), [step_definitions](lib/bdd/core/steps) and  [actions](lib/bdd/core/actions) folders.
