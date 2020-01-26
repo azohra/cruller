@@ -347,3 +347,6 @@ run_e2e_tests:
 * ```accessibilityCheck``` method allows for two parameters, namely ```expected page``` and ```createNewFile``` flag. Flag value defaults to value set in ```config``` file, if none provided as argument.
 
 * Sample Jest matchers for accessibility validation can be refrenced at - ```__tests__/accessibility.test.js```
+
+## Using Cucumber JS with Gherkin Syntax
+Cruller now also support e2e tests written in [gherkin](https://cucumber.io/docs/gherkin/reference/) syntax using [cucumber-js](https://github.com/cucumber/cucumber-js). Checkout out [cruller-bdd docs](lib/bdd/README.md) for more info on setting up a project and extending it with custom tests.
