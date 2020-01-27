@@ -318,3 +318,29 @@ The following example shows how to create a copy and paste step definition to ad
     ```bash
     npm run cruller:run -- -name CopyPaste --tags @copy-paste
     ```
+## Using Environment Variables
+`cruller` bdd provides the following environment variables to be used while running e2e tests locally or in a pipeline.
+
+* `PIPELINE`: Run the e2e tests using [browserless.io](https://docs.browserless.io/)
+    ```bash
+    PIPELINE=true BROWSERLESS_KEY=<browserless_token> npm run cruller:run
+    ```
+    **NOTE:** `BROWSERLESS_KEY` needs to be a valid [browserless.io](https://docs.browserless.io/) token and should always be present when using `PIPELINE` environment variable.
+    **DO NOT** commit `BROWSERLESS_KEY` or any keys as part of the repo.
+
+* `HEADLESSCHROME`: Run e2e tests in headless mode using puppeteer.
+    ```bash
+    HEADLESSCHROME=true npm run cruller:run
+    ```
+* `BREAKPOINT`: Set the viewport size based on the `cruller` `cosmiconfig` in package.json
+    ```bash
+    BREAKPOINT=mobile npm run cruller:run
+    ```
+
+## References
+* [Gherkin Syntax](https://cucumber.io/docs/gherkin/reference/)
+* [Cucumber JS Node Example](https://github.com/cucumber/cucumber-js/blob/master/docs/nodejs_example.md)
+* [Step Definition Organization](https://cucumber.io/docs/gherkin/step-organization/)
+* [Puppeteer API](https://github.com/puppeteer/puppeteer/blob/v2.0.0/docs/api.md)
+* [Browserless Docs](https://docs.browserless.io/)
+* [VS Code - Gherkin Support](https://marketplace.visualstudio.com/items?itemName=alexkrechik.cucumberautocomplete)
