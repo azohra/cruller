@@ -39,7 +39,7 @@ export const page: {
     reloadPage: () => Promise<void>;
     hasPageTitle: (value: string) => Promise<void>;
     waitForPageNavigation: () => Promise<void>;
-    goToURL: (value: string) => Promise<any>;
+    goToURL: (value: string, incognito?: boolean) => Promise<any>;
     autoScroll: () => Promise<void>;
 };
 export const utils: {

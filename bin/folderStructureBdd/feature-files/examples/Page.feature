@@ -5,6 +5,9 @@ Feature: Page Step Definitions
 
     Scenario: Go to URL
         Given I go to url "Google Site"
+    
+    Scenario: Go to URL Incognito
+        Given I go to url "Google Site" incognito
 
     Scenario: Refresh page
         Given I go to url "Google Site"
