@@ -132,7 +132,7 @@ Or if you are using yarn
 yarn cruller:run
 ```
 
-This would open up the chrome and run the tests outlined in the example feature files and would generate a report with the name as per the `reportName` config in `package.json` under the `bdd/reports` folder.
+This would open up chrome and run the tests outlined in the example feature files and would generate a report with the name as per the `reportName` config in `package.json` under the `bdd/reports` folder.
 
 ### Specifying Report Name
 
@@ -173,7 +173,7 @@ npm run cruller:run -- --tags @form @element @page
 
 ## Running Reports
 
-In order to create a readable interactive report based on the `json` file created after running the tests, use thee following command.
+In order to create a readable interactive report based on the `json` file created after running the tests, use the following command.
 
 ```bash
 npm run cruller:report
