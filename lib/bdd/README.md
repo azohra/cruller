@@ -220,3 +220,62 @@ The following example shows how to write e2e tests using the cruller bdd framewo
     ```
 
 For more examples on features files and the corresponding step definitions checkout [examples](../../bin/folderStructureBdd/feature-files/examples), [step_definitions](core/steps) and  [actions](core/actions) folders.
+
+## Custom Step Definitions Using Puppeteer Page
+You can create custom step definitions by using the puppeteer  page object provided `cruller` bdd to serve the needs of your e2e tests.
+
+The following example shows how to create a copy and paste step definition to add text to an input.
+
+1. Create a file named `'Copy Paste.feature'` under `bdd/feature-files` folder.
+2. Add the following lines of code to the `'Copy Paste.feature'` file and save it.
+    ```gherkin
+    @copy-paste
+    Feature: Custom copy paste step definition
+
+        Use the puppeteer page object to test copy paste text data
+
+        Scenario: Copy `bora` and paste to search `bora bora`
+            Given I go to url "Google Website"
+            Then I focus on "Search Box"
+            Then I fill field "Search Box" with "bora "
+            Then I hit Ctrl+c
+            Then I hit Ctrl+v
+            And I press enter
+            Then I wait for page navigation
+    ```
+3. Next create a file named `copy-paste.js` under `bdd/support/selectors` folder.
+4. Add the following lines of code to the file and save it.
+    ```js
+    module.exports = {
+        'Google Website': 'https://www.google.com',
+        'Search Box': '[name="q"]'
+    };
+    ```
+5. Next create a file named `copy-paste.js` under `bdd/step_definitions` folder.
+6. Add the following lines of code to the file and save it.
+    ```js
+    const { Then } = require('cucumber');
+    // The cucumber JS scope object
+    const scope = require('cruller/lib/bdd').scope;
+    // The cucumber JS context during the e2e tests
+    const { context } = scope;
+    // The current page object open in the browser
+    const { currentPage } = context;
+    
+    Then('Then I hit Ctrl+c', async () => {
+        await currentPage.keyboard.down('Ctrl');
+        await currentPage.keyboard.press('KeyC');
+        await currentPage.keyboard.up('Ctrl')
+    });
+
+    Then('Then I hit Ctrl+v', async () => {
+        await currentPage.keyboard.down('Ctrl');
+        await currentPage.keyboard.press('KeyV');
+        await currentPage.keyboard.up('Ctrl')
+    });
+    ```
+    **Note:** This is based on the [keyboard](https://github.com/puppeteer/puppeteer/blob/v2.0.0/docs/api.md#class-keyboard) api of puppeteer.
+7. Finally run the test feature using the following command
+    ```bash
+    npm run cruller:run -- -name CopyPaste --tags @copy-paste
+    ```
