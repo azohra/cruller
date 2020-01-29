@@ -1,13 +1,15 @@
 'use strict';
 
 
-const AxePuppeteer = jest.fn();
-AxePuppeteer.prototype.analyze = jest.fn();
-AxePuppeteer.prototype.include = jest.fn(() => {
-	return {
-		analyze: jest.fn(),
-	};
-});
+function AxePuppeteer() {
+	return this;
+};
+AxePuppeteer.prototype.analyze = function() {
+	return this;
+};
+AxePuppeteer.prototype.include = function() {
+	return this;
+};
 
 module.exports = {
 	AxePuppeteer,

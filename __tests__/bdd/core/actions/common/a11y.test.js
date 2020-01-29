@@ -69,29 +69,20 @@ describe('a11y', () => {
 	describe('checkPageA11y', () => {
 		it('should attach report', async () => {
 			jest.spyOn(fs, 'readFile').mockImplementation((_, cb) => cb());
-			const scope = getScope();
-			// const attach = jest.spyOn(scope, 'attach');
 			const analyze = jest.spyOn(AxePuppeteer.prototype, 'analyze');
-			// const report = jest.spyOn(a11y, 'createA11yReport').mockImplementation(jest.fn(() => Promise.resolve('test')));
 			await a11y.checkPageA11y();
 			expect(analyze).toHaveBeenCalled();
-			// expect(report).toHaveBeenCalled();
-			// expect(attach).toHaveBeenCalled();
 		});
 	});
 
 	describe('checkElementA11y', () => {
 		it('should attach report', async () => {
 			const scope = getScope();
-			// const attach = jest.spyOn(scope, 'attach');
 			const analyze = jest.spyOn(AxePuppeteer.prototype, 'analyze');
 			const include = jest.spyOn(AxePuppeteer.prototype, 'include');
-			// const report = jest.spyOn(a11y, 'createA11yReport').mockImplementation(jest.fn(() => Promise.resolve('test')));
 			await a11y.checkElementA11y();
 			expect(analyze).toHaveBeenCalled();
 			expect(include).toHaveBeenCalled();
-			// expect(report).toHaveBeenCalled();
-			// expect(attach).toHaveBeenCalled();
 		});
 	});
 });

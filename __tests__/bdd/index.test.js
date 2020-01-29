@@ -1,6 +1,3 @@
-jest.mock('cucumber');
-jest.mock('puppeteer');
-jest.mock('lodash.get');
 const CrullerCucumber = require('../../lib/bdd/index');
 const { setDefaultTimeout, setWorldConstructor } = require('cucumber');
 const get = require('lodash.get');
@@ -8,6 +5,10 @@ const puppeteer = require('puppeteer')
 const utils = require('../../lib/bdd/core/utils/index');
 const scope = require('../../lib/bdd/core/scope');
 const defaultSettings = require('../../lib/bdd/core/utils/default-settings');
+
+jest.mock('cucumber');
+jest.mock('puppeteer');
+jest.mock('lodash.get');
 jest.mock('../../lib/bdd/core/utils/index');
 jest.mock('../../lib/bdd/core/scope');
 
