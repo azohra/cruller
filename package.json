@@ -22,7 +22,8 @@
     }
   },
   "jest": {
-    "testRunner": "jest-circus/runner"
+    "testRunner": "jest-circus/runner",
+    "coveragePathIgnorePatterns": ["<rootDir>/bin/cruller-bdd.js", "<rootDir>/bin/folderStructureBdd"]
   },
   "repository": {
     "type": "git",
