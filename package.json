@@ -23,7 +23,7 @@
   },
   "jest": {
     "testRunner": "jest-circus/runner",
-    "coveragePathIgnorePatterns": ["<rootDir>/__tests__/accessibility.test.js", "<rootDir>/__tests__/composer.test.js", "<rootDir>/__tests__/permutations.test.js"]
+    "coveragePathIgnorePatterns": ["<rootDir>/bin/cruller-bdd.js", "<rootDir>/bin/folderStructureBdd"]
   },
   "repository": {
     "type": "git",
