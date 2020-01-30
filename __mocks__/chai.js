@@ -4,6 +4,7 @@ const assert = function() {
 
 assert.notEqual = jest.fn();
 assert.equal = jest.fn();
+assert.match = jest.fn();
 
 module.exports = {
 	assert,
