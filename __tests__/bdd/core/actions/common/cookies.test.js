@@ -1,9 +1,6 @@
 const { getScope } = require('../../../../../lib/bdd/core/utils');
-const { assert } = require('chai');
 const cookies = require('../../../../../lib/bdd/core/actions/common/cookies');
 
-jest.mock('chai');
-jest.mock('lodash.get');
 jest.mock('../../../../../lib/bdd/core/utils');
 
 describe('cookies', () => {
@@ -11,7 +8,16 @@ describe('cookies', () => {
 		const setCookie = jest.fn();
 		const deleteCookie = jest.fn();
 		const cookies = jest.fn(() => {
-			return ['hello', 'world'];
+			return [
+				{
+					name: 'hello',
+					value: 'hello',
+				},
+				{
+					name: 'world',
+					value: 'world',
+				}
+			];
 		});
 		getScope.mockImplementation(() => ({
 			context: {
@@ -43,12 +49,8 @@ describe('cookies', () => {
 
 		it('should get the correct cookie', async () => {
 			const getCookies = jest.spyOn(getScope().context.currentPage, 'cookies');
-			const notEqual = jest.spyOn(assert, 'notEqual');
-			const equal = jest.spyOn(assert, 'equal');
-			await cookies.getCookie({});
+			await cookies.getCookie('hello', 'hello');
 			expect(getCookies).toHaveBeenCalled();
-			expect(notEqual).toHaveBeenCalled();
-			expect(equal).toHaveBeenCalled();
 		});
 	});
 
@@ -71,12 +73,22 @@ describe('cookies', () => {
 
 		it('should call setCookies', async () => {
 			const hashes = jest.fn().mockImplementation(() => {
-				return [Promise.resolve(['hello', 'world'])];
+				return [
+					{
+						name: 'hello',
+						value: 'hello',
+					},
+					{
+						name: 'world',
+						value: 'world',
+					}
+				];
 			});
 			const data = {
 				hashes,
 			};
 			const setCookie = jest.spyOn(getScope().context.currentPage, 'setCookie');
+			setCookie.mockClear()
 			await cookies.setCookies(data);
 			expect(setCookie).toHaveBeenCalled();
 			expect(setCookie).toHaveBeenCalledTimes(2);
@@ -90,12 +102,22 @@ describe('cookies', () => {
 
 		it('should call getCookies', async () => {
 			const hashes = jest.fn().mockImplementation(() => {
-				return [Promise.resolve(['hello', 'world'])];
+				return [
+					{
+						name: 'hello',
+						value: 'hello',
+					},
+					{
+						name: 'world',
+						value: 'world',
+					}
+				];
 			});
 			const data = {
 				hashes,
 			};
 			const getCookie = jest.spyOn(getScope().context.currentPage, 'cookies');
+			getCookie.mockClear();
 			await cookies.getCookies(data);
 			expect(getCookie).toHaveBeenCalled();
 			expect(getCookie).toHaveBeenCalledTimes(2);
@@ -109,12 +131,22 @@ describe('cookies', () => {
 
 		it('should call deleteCookies', async () => {
 			const hashes = jest.fn().mockImplementation(() => {
-				return [Promise.resolve(['hello', 'world'])];
+				return [
+					{
+						name: 'hello',
+						value: 'hello',
+					},
+					{
+						name: 'world',
+						value: 'world',
+					}
+				];
 			});
 			const data = {
 				hashes,
 			};
 			const deleteCookie = jest.spyOn(getScope().context.currentPage, 'deleteCookie');
+			deleteCookie.mockClear();
 			await cookies.deleteCookies(data);
 			expect(deleteCookie).toHaveBeenCalled();
 			expect(deleteCookie).toHaveBeenCalledTimes(2);

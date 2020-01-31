@@ -1,9 +1,7 @@
 const { getSelector, getScope } = require('../../../../../lib/bdd/core/utils');
 const { elementPresent } = require('../../../../../lib/bdd/core/actions/common/utils');
-const { assert } = require('chai');
 const element = require('../../../../../lib/bdd/core/actions/common/element');
 
-jest.mock('chai');
 jest.mock('../../../../../lib/bdd/core/actions/common/utils')
 jest.mock('../../../../../lib/bdd/core/utils');
 
@@ -17,7 +15,10 @@ describe('element', () => {
 				click,
 			};
 		})
-		const $eval = jest.fn((_, cb) => cb(elem));
+		const $eval = jest.fn((_, cb) => {
+			cb(elem);
+			return 'test';
+		});
 		const hover = jest.fn();
 		const $ = jest.fn(() => {
 			return {
@@ -41,7 +42,6 @@ describe('element', () => {
 		afterEach(() => {
 			getScope.mockClear();
 			elementPresent.mockClear();
-			
 		});
 
 		it('should focus on item', async () => {
@@ -94,11 +94,9 @@ describe('element', () => {
 
 		it('should has text', async () => {
 			const $eval = jest.spyOn(getScope().context.currentPage, '$eval');
-			const match = jest.spyOn(assert, 'match');
-			await element.hasText();
+			await element.hasText(null, /test/);
 			expect(elementPresent.mock.calls.length).toBe(1);
 			expect($eval).toHaveBeenCalled();
-			expect(match).toHaveBeenCalled();
 		});
 	});
 
