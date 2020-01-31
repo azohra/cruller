@@ -47,9 +47,6 @@ describe('page', () => {
 			},
 		}));
 		getSelector.mockImplementation(jest.fn());
-		process.env = {
-			BREAKPOINT: 'true',
-		};
 		window.scrollBy = jest.fn();
 	});
 
@@ -99,6 +96,9 @@ describe('page', () => {
 		});
 
 		it('should go to expected url', async () => {
+			process.env = {
+				BREAKPOINT: true,
+			};
 			const openBrowser = jest.spyOn(browser, 'openBrowser');
 			const setViewport = jest.spyOn(getScope().context.currentPage, 'setViewport');
 			const goto = jest.spyOn(getScope().context.currentPage, 'goto');
@@ -110,13 +110,16 @@ describe('page', () => {
 		});
 
 		it('should go to expected url incognito view', async () => {
+			process.env = {
+				BREAKPOINT: false,
+			};
 			const openBrowser = jest.spyOn(browser, 'openBrowser');
 			const setViewport = jest.spyOn(getScope().context.currentPage, 'setViewport');
 			const goto = jest.spyOn(getScope().context.currentPage, 'goto');
 			const createIncognitoBrowserContext = jest.spyOn(getScope().browser, 'createIncognitoBrowserContext');
 			const newPage = jest.spyOn(getScope().browser.createIncognitoBrowserContext(), 'newPage');
 			await page.goToURL('test', true);
-			expect(setBreakpoint.mock.calls.length).toBe(1);
+			expect(setBreakpoint.mock.calls.length).toBe(0);
 			expect(openBrowser).toHaveBeenCalled();
 			expect(setViewport).toHaveBeenCalled();
 			expect(goto).toHaveBeenCalled();
@@ -131,10 +134,22 @@ describe('page', () => {
 			setBreakpoint.mockClear();
 		});
 
-		it('should auto scroll', async () => {
+		it('should auto scroll with clearInterval being called', async () => {
 			const evaluate = jest.spyOn(getScope().context.currentPage, 'evaluate');
+			const clearInterval = jest.spyOn(window, 'clearInterval');
 			await page.autoScroll();
 			expect(evaluate).toHaveBeenCalled();
+			expect(clearInterval).toHaveBeenCalled();
+		});
+
+		it('should clearInterval in auto scroll always being called once', async () => {
+			const evaluate = jest.spyOn(getScope().context.currentPage, 'evaluate');
+			const clearInterval = jest.spyOn(window, 'clearInterval');
+			clearInterval.mockClear();
+			jest.spyOn(document.body, 'scrollHeight', 'get').mockImplementation(() => 300);
+			await page.autoScroll();
+			expect(evaluate).toHaveBeenCalled();
+			expect(clearInterval).toHaveBeenCalledTimes(1);
 		});
 	});
 });
