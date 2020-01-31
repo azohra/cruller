@@ -1,4 +1,5 @@
 const get = require('lodash.get');
+const fs = require('fs');
 const { getSelector, getScope } = require('../../../../../lib/bdd/core/utils');
 const utils = require('../../../../../lib/bdd/core/actions/common/utils');
 const scope = require('../../../../../lib/bdd/core/scope');
@@ -28,6 +29,18 @@ describe('utils', () => {
 			},
 		}));
 		getSelector.mockImplementation(jest.fn());
+	});
+
+	describe('wait', () => {
+		afterEach(() => {
+			getScope.mockClear();
+		});
+
+		it('should call the delay function within wait', async () => {
+			const setTimeout = jest.spyOn(window, 'setTimeout');
+			await utils.wait(0);
+			expect(setTimeout).toHaveBeenCalled();
+		});
 	});
 
 	describe('elementPresent', () => {
@@ -72,11 +85,23 @@ describe('utils', () => {
 		});
 
 		it('should present the element with context', async () => {
+			fs.existsSync = jest.fn(() => true);
 			const screenshot = jest.spyOn(getScope().context.currentPage, 'screenshot');
 			const attach = jest.spyOn(getScope(), 'attach');
 			await utils.takeScreenshot();
 			expect(screenshot).toHaveBeenCalled();
 			expect(attach).toHaveBeenCalled();
+		});
+
+		it('should screenshot and attach not being called when existsSync is false', async () => {
+			fs.existsSync = jest.fn(() => false);
+			const screenshot = jest.spyOn(getScope().context.currentPage, 'screenshot');
+			const attach = jest.spyOn(getScope(), 'attach');
+			screenshot.mockClear();
+			attach.mockClear();
+			await utils.takeScreenshot();
+			expect(screenshot).toHaveBeenCalledTimes(0);
+			expect(attach).toHaveBeenCalledTimes(0);
 		});
 	});
 });
