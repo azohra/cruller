@@ -3,7 +3,6 @@ const { elementPresent } = require('../../../../../lib/bdd/core/actions/common/u
 const { assert } = require('chai');
 const form = require('../../../../../lib/bdd/core/actions/common/form');
 
-jest.mock('chai');
 jest.mock('../../../../../lib/bdd/core/actions/common/utils')
 jest.mock('../../../../../lib/bdd/core/utils');
 
@@ -58,7 +57,7 @@ describe('form', () => {
 		it('should check form has value', async () => {
 			const $eval = jest.spyOn(getScope().context.currentPage, '$eval');
 			const equal = jest.spyOn(assert, 'equal');
-			await form.hasValue();
+			await form.hasValue(null, input.value);
 			expect(elementPresent.mock.calls.length).toBe(1);
 			expect($eval).toHaveBeenCalled();
 			expect(equal).toHaveBeenCalled();
