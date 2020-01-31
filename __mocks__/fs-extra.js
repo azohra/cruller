@@ -1,5 +1,5 @@
 'use strict';
 
-const fs = jest.genMockFromModule('fs-extra');
+const fs = jest.fn();
 
 module.exports = fs;
