@@ -1,6 +1,6 @@
 {
   "name": "cruller",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "A web crawler capable of traversing any site with custom environmental variables.",
   "main": "index.js",
   "directories": {
