@@ -23,7 +23,10 @@
   },
   "jest": {
     "testRunner": "jest-circus/runner",
-    "coveragePathIgnorePatterns": ["<rootDir>/bin/cruller-bdd.js", "<rootDir>/bin/folderStructureBdd"]
+    "coveragePathIgnorePatterns": [
+      "<rootDir>/bin/cruller-bdd.js",
+      "<rootDir>/bin/folderStructureBdd"
+    ]
   },
   "repository": {
     "type": "git",
@@ -36,7 +39,7 @@
     "axe-puppeteer": "^1.0.0",
     "axe-reports": "^1.1.11",
     "chai": "^4.2.0",
-    "cosmiconfig": "^5.2.1",
+    "cosmiconfig": "5.2.1",
     "cucumber": "^6.0.5",
     "cucumber-html-reporter": "^5.1.0",
     "fs-extra": "^7.0.1",

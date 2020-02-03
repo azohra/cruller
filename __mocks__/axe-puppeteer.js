@@ -1,15 +1,15 @@
 'use strict';
 
 function AxePuppeteer() {
-	return this;
-};
+    return this;
+}
 AxePuppeteer.prototype.analyze = function() {
-	return this;
+    return this;
 };
 AxePuppeteer.prototype.include = function() {
-	return this;
+    return this;
 };
 
 module.exports = {
-	AxePuppeteer,
+    AxePuppeteer,
 };
