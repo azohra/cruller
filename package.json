@@ -1,6 +1,6 @@
 {
   "name": "cruller",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "A web crawler capable of traversing any site with custom environmental variables.",
   "main": "index.js",
   "directories": {
@@ -11,16 +11,22 @@
     "test": "jest _tests_",
     "cm": "git-cz",
     "lint": "npx eslint \"**/*.js\"",
-    "lint:fix": "npx eslint \"**/*.js\" --fix"
+    "lint:fix": "npx eslint \"**/*.js\" --fix",
+    "definitions": "tsc -p ./lib/bdd",
+    "prepublish": "npm run definitions"
   },
   "husky": {
     "hooks": {
       "prepare-commit-msg": "exec < /dev/tty && git cz --hook",
-      "pre-commit": "npm run lint && cd bin/folderStructure && npx makeDocs && git add docs"
+      "pre-commit": "npm run definitions && npm run lint && git add lib/bdd/typings && cd bin/folderStructure && npx makeDocs && git add docs"
     }
   },
   "jest": {
-    "testRunner": "jest-circus/runner"
+    "testRunner": "jest-circus/runner",
+    "coveragePathIgnorePatterns": [
+      "<rootDir>/bin/cruller-bdd.js",
+      "<rootDir>/bin/folderStructureBdd"
+    ]
   },
   "repository": {
     "type": "git",
@@ -32,12 +38,20 @@
     "@stamp/it": "^1.1.0",
     "axe-puppeteer": "^1.0.0",
     "axe-reports": "^1.1.11",
-    "cosmiconfig": "^5.2.1",
+    "chai": "^4.2.0",
+    "cosmiconfig": "5.2.1",
+    "cucumber": "^6.0.5",
+    "cucumber-html-reporter": "^5.1.0",
     "fs-extra": "^7.0.1",
-    "puppeteer": "^1.16.0"
+    "glob": "^7.1.6",
+    "lodash.get": "^4.4.2",
+    "lodash.merge": "^4.6.2",
+    "puppeteer": "^1.16.0",
+    "yargs": "^15.1.0"
   },
   "bin": {
-    "gen-fs": "bin/gen-fs.js"
+    "gen-fs": "bin/gen-fs.js",
+    "cruller-bdd": "bin/cruller-bdd.js"
   },
   "devDependencies": {
     "commitizen": "^4.0.3",
@@ -47,11 +61,19 @@
     "husky": "^1.3.1",
     "jest": "^24.8.0",
     "jest-circus": "^24.9.0",
-    "semantic-release": "^15.13.24"
+    "semantic-release": "^15.13.24",
+    "typescript": "^3.7.5"
   },
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "cruller": {
+    "rootPath": "./bin/folderStructureBdd",
+    "reportsPath": "./bin/folderStructureBdd/reports",
+    "selectorFiles": [
+      "./bin/folderStructureBdd/support/selectors/**/*.js"
+    ]
   }
 }
