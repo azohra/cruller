@@ -1,4 +1,6 @@
 const Cruller = require('../lib/crawler');
+
+jest.unmock('axe-puppeteer');
     
 describe('Run accessibility validation', () => {
     jest.retryTimes(3);
